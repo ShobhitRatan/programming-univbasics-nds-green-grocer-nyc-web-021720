@@ -33,13 +33,39 @@ def consolidate_cart(cart)
     end
     n += 1
   end
-  return n_c 
+  return n_c
 end
 
 def apply_coupons(cart, coupons)
   # Consult README for inputs and outputs
   #
   # REMEMBER: This method **should** update cart
+  result = []
+  if coupons.length == 0
+    return cart
+  end
+  count = 0
+  while count < cart.length do
+    cart_item = cart[count]
+    coupon_item = find_item_by_name_in_collection(cart_item[:item], coupons)
+    if coupon_item
+      n_c_c = cart_item[:count] % coupon_item[:num] #no coupon count
+      # c_a_c = cart_item[:count] - n_c_c   # coupon applied count
+      p_u_p = coupon_item[:cost] / coupon_item[:num]  #per unit price
+      #c_i_c = c_a_c / coupon_item[:num] #coupon items count
+      t_h = {
+        :item => "#{cart_item[:item]} W/COUPON",
+        :price => p_u_p,
+        :clearance => cart_item[:clearance],
+        :count => coupon_item[:num]
+      } #temporary hash
+      result.append(t_h)
+      cart_item[:count] = n_c_c
+    end
+    result.append(cart_item)
+    count += 1
+  end
+  return result   
 end
 
 def apply_clearance(cart)
